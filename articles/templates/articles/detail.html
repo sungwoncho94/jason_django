@@ -5,18 +5,20 @@
 {% block container %}
 <h2>{{ article.title }}</h2>
 <p>{{ article.created_at }}</p>
+<p>작성자: {{ article.user }}</p>
 <hr>
 <p>{{ article.content }}</p>
 <hr>
-{% comment %} 로그인한 상태에서만 수정/삭제 버튼 보여줌 {% endcomment %}
-{% if user.is_authenticated %}
+{% comment %} 로그인한 상태에서만 수정/삭제 버튼 보여줌 -> {% if user.is_authenticated %} {% endcomment %}
+{% comment %} 내가 쓴 글에만 수정하기/삭제하기 버튼 보이게하기 {% endcomment %}
+{% if article.user == request.user %}
 <a href="{% url 'articles:update' article.pk %}">[수정하기]</a>
 <form action="{% url 'articles:delete' article.pk %}" method="post">
   {% csrf_token %}
   <button type="submit">삭제하기</button>
 </form>
 {% endif %}
-<hr>
+
 <h3>Comments</h3>
 {% comment %} 로그인한 상태에서만 댓글 작성 가능 {% endcomment %}
 {% if user.is_authenticated %}
@@ -34,12 +36,16 @@
     {% if user.is_authenticated %}
     <form action="{% url 'articles:comments_delete' article.pk comment.pk %}" method="post">
       {% csrf_token %}
-      <span>{{ comment.content }} - {{ comment.created_at }}</span>
-      <button type="submit">삭제하기</button>
+      <span>{{ comment.content }} - {{ comment.created_at }} </span><br>
+      <span>작성자: {{ comment.user }}</span>
+      {% if request.user == comment.user %}
+        <button class='btn btn-link' type="submit">삭제하기</button>
+      {% endif %}
     </form>
     {% comment %} 로그인 안했어도 내용은 보여줘야함 {% endcomment %}
     {% else %}
     <span>{{ comment.content }} - {{ comment.created_at }}</span>
+    <p>작성자: {{ comment.user }}</p>
     {% endif %}
   </li>
 {% endfor %}

@@ -3,7 +3,7 @@
 {% block title %}Accounts{% endblock title %}
 
 {% block container %}
-
+{% comment %} signup 이라는 url을 가지고 있는 페이지를 보여주는 것 {% endcomment %}
 {% if request.resolver_match.url_name == 'signup' %}
 <h2>회원가입</h2>
 {% elif request.resolver_match.url_name == 'login' %}
