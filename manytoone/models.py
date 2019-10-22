@@ -46,5 +46,3 @@ class Patient(models.Model):
 
 #     def __str__(self):
 #         return f'의사{self.doctor.id} - 환자{self.patient.id}'
-
-

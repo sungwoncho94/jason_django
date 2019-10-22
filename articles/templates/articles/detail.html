@@ -6,6 +6,15 @@
 <h2>{{ article.title }}</h2>
 <p>{{ article.created_at }}</p>
 <p>작성자: {{ article.user }}</p>
+<a>
+  {% comment %} 하트를 누르면 좋아요 요청이 갈 수 있도록 {% endcomment %}
+  {% if user in article.liked_users.all %}
+  <a href="{% url 'articles:like' article.pk %}"><i class="fas fa-heart fa-lg" style="color: red"></i></a>  
+  {% else %}
+  <a href="{% url 'articles:like' article.pk %}"><i class="far fa-heart fa-lg" style="color: red"></i></a>
+  {% endif %}
+</a>
+<span>{{ article.liked_users.all | length }}명이 이 글을 좋아합니다.</span>
 <hr>
 <p>{{ article.content }}</p>
 <hr>

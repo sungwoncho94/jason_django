@@ -113,3 +113,17 @@ def comments_delete(request, article_pk, comment_pk):
             return render(request, 'articles/datail', article_pk)
     return HttpResponse('You are Unauthorized', status=401)
 
+
+def like(request, article_pk):
+    user = request.user
+    article = get_object_or_404(Article, pk=article_pk)
+
+    if article.liked_users.filter(pk=user.pk).exists():
+        # 이미 좋아요 한 유저가 다시 한번 누르면 좋아요 취소
+        user.liked_articles.remove(article)
+    else:
+        # user가 좋아요를 누른 article에 현재 article을 추가할 것
+        user.liked_articles.add(article)
+    
+    # 좋아요누른 후 다시 detail page 보여주기
+    return redirect('articles:detail', article_pk)
