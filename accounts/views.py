@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login as auth_login, logout as auth_logout
-from django.views.decorators.http import require_GET, require_POST
-# login이라는 함수명이 겹치기때문에 다른 이름으로 지어준다
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+# UserCreationForm을 통해 user에 대한 정보 가지고옴
+# UserChangeForm : 유저 정보를 수정하기 위한 form
+from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
+# Authentication에 대한 행위를 할 수 있음 import login으로 로그인할 수 있음.
+from django.views.decorators.http import require_POST
+from .forms import CustomUserChangeForm
+from django.contrib.auth.decorators import login_required
 
 
 # 회원가입 할 수 있는 form 이 주어져야하는데 동일한 url이 두가지 기능 수행
@@ -27,7 +31,7 @@ def signup(request):
     context = {
         'form': form,
     }
-    return render(request, 'accounts/signup.html', context)
+    return render(request, 'accounts/form.html', context)
 
 # login은 세션을 만드는 것이기 때문에 usercreateform X
 def login(request):
@@ -51,7 +55,7 @@ def login(request):
         form = AuthenticationForm()
 
     context = {'form': form}
-    return render(request, 'accounts/login.html', context)
+    return render(request, 'accounts/form.html', context)
 
 
 def logout(request):
@@ -66,3 +70,40 @@ def delete(request):
     if request.user.if_authenticated:
         request.user.delete()
     return redirect('articles:index')
+
+@login_required
+def update(request):
+    # 수정해주세요~ 요청이 들어올 때 실제로 바꾸는 기능 수행
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:form')
+    # 수정할 수 있는 페이지 주세요~ 라는 요청이 들어올 때 회원정보 바꿀 수 있는 form 보여준다
+    else:
+        # 현재 나의 정보를 채운 채로 form에 보낸다.
+        form = CustomUserChangeForm(instance=request.user)
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/form.html', context)
+
+
+@login_required
+def password(request):
+    if request.method == 'POST':
+        # 첫 번째 인자 = user정보 / 두번째 = data
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # 비밀번호 바꾼 후, 자동으로 로그인상태 유지
+            update_session_auth_hash(request, user)
+            #return redirect('accounts:update')
+            # 비밀번호 변경 후 index페이지로 보내주기
+            return redirect('articles:index')
+    else:
+        form = PasswordChangeForm(request.user)
+        context = {
+            'form': form,
+        }
+        return render(request, 'accounts/form.html', context)

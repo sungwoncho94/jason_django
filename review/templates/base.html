@@ -19,6 +19,7 @@
       <p>
         <span>{{ user.username }}님. 반갑습니다</span>
         <a href="{% url 'accounts:logout' %}">[로그아웃]</a>
+        <a href="{% url 'accounts:update' %}">[회원정보 수정]</a>
         <form action="{% url 'accounts:delete' %}" method="post">
           {% csrf_token %}
           <button type="submit">[회원탈퇴]</button>
