@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Accounts::회원가입 {% endblock title %}
+
+{% block container %}
+<h2>회원가입</h2>
+{% comment %} get으로 받은 후, post로 signup에 다시 요청보냄 {% endcomment %}
+<form method='post'>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">회원가입</button>
+</form>
+
+{% endblock container %}
+
+
