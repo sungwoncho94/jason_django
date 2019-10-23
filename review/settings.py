@@ -131,3 +131,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
+
+# 원래 settings.AUTH_USER_MODEL (default) 을 갖다가 썼는데, 이제부터 우리가 커스텀한 유저 모델을 가져옴
+# 원래는 장고가 가지고 있는 user model이 있었지만, 우리가 accounts라는 어플에 User모델을 정의했다
+# 사용자정의유저모델 = 앱이름.모델이름
+AUTH_USER_MODEL = 'accounts.User'

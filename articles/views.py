@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from .models import Article, Comment
 from django.http import HttpResponse
 from .forms import ArticleForm, CommentForm
@@ -118,6 +119,7 @@ def like(request, article_pk):
     user = request.user
     article = get_object_or_404(Article, pk=article_pk)
 
+    # if user in article.liked_users.all():
     if article.liked_users.filter(pk=user.pk).exists():
         # 이미 좋아요 한 유저가 다시 한번 누르면 좋아요 취소
         user.liked_articles.remove(article)
@@ -127,3 +129,20 @@ def like(request, article_pk):
     
     # 좋아요누른 후 다시 detail page 보여주기
     return redirect('articles:detail', article_pk)
+
+
+def follow(request, article_pk, user_pk):
+    # 로그인한 유저가 게시글 유저를 팔로우/언팔하는 기능
+    # user_pk = 게시글 유저의 pk를 받아서 팔/언팔 하는 것
+    user = request.user
+    person = get_object_or_404(get_user_model(), pk=user_pk) # 게시글 작성자 = 404(getusermodel을 통해서 모델 넘겨받고, )
+
+    # 내가 선택한 user가 followers명단에 있다면 -> 언팔할 것
+    if user in person.followers.all():
+        person.followers.remove(user)
+    else:
+        person.followers.add(user)
+
+    return redirect('articles:detail', article_pk)
+
+

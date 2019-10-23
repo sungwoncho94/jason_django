@@ -5,6 +5,9 @@
 {% block container %}
 <h2>{{ article.title }}</h2>
 <p>{{ article.created_at }}</p>
+<hr>
+<p>{{ article.content }}</p>
+<hr>
 <p>작성자: {{ article.user }}</p>
 <a>
   {% comment %} 하트를 누르면 좋아요 요청이 갈 수 있도록 {% endcomment %}
@@ -15,9 +18,7 @@
   {% endif %}
 </a>
 <span>{{ article.liked_users.all | length }}명이 이 글을 좋아합니다.</span>
-<hr>
-<p>{{ article.content }}</p>
-<hr>
+
 {% comment %} 로그인한 상태에서만 수정/삭제 버튼 보여줌 -> {% if user.is_authenticated %} {% endcomment %}
 {% comment %} 내가 쓴 글에만 수정하기/삭제하기 버튼 보이게하기 {% endcomment %}
 {% if article.user == request.user %}
@@ -27,7 +28,8 @@
   <button type="submit">삭제하기</button>
 </form>
 {% endif %}
-
+<br>
+<hr>
 <h3>Comments</h3>
 {% comment %} 로그인한 상태에서만 댓글 작성 가능 {% endcomment %}
 {% if user.is_authenticated %}
@@ -59,5 +61,7 @@
   </li>
 {% endfor %}
 </ul>
+
+{% include 'articles/_follow.html' %}
 
 {% endblock container %}

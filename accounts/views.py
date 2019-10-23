@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm #UserCreationForm, 
 # UserCreationForm을 통해 user에 대한 정보 가지고옴
 # UserChangeForm : 유저 정보를 수정하기 위한 form
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
 # Authentication에 대한 행위를 할 수 있음 import login으로 로그인할 수 있음.
 from django.views.decorators.http import require_POST
-from .forms import CustomUserChangeForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 
 
@@ -18,7 +18,7 @@ def signup(request):
 
     if request.method == 'POST':
         # 유저들이 post요청으로 보낸 데이터를 form에 보낸다
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             # 회원가입과 동시에 자동로그인
             user = form.save()
@@ -27,7 +27,7 @@ def signup(request):
         
     else:
         # 회원가입 form 은 장고가 제공. form 에 담아서 context로 보내주기
-        form = UserCreationForm
+        form = CustomUserCreationForm()
     context = {
         'form': form,
     }

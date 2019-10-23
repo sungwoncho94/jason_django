@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+<head class="container">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -36,7 +36,11 @@
     <a href="{% url 'articles:index' %}">[목록]</a>
     <hr>
   </header>
+
+  <div>
   {% block container %}{% endblock container %}
+  </div>
+
   {% comment %} js부르기 {% endcomment %}
   <script src="{% static 'bootstrap\js\bootstrap.bundle.js' %}"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
