@@ -20,6 +20,20 @@ class Article(models.Model):
     class Meta:
         ordering = ('-pk', )
 
+
+class Comment(models.Model):
+    # 1:N 관계 표시
+    # article.comment_set.all()  ==  article.comments.all()  (related 이름 설정하면 이렇게 받을 수 있음)
+    article = models.ForeignKey(Article, related_name='comments', on_delete=models.CASCADE)
+    # user.comments  /  comments.user로 접근할 수 있다.
+    content = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('-pk', )
+
+
 ''' 가영이 주석 article 모델
 # article.liked_users.all() -> 게시글을 좋아요 누른 사람들
 # user.liked_articles.all() -> 내가 좋아요 누른 게시글들...
@@ -49,14 +63,3 @@ class Article(models.Model):  # model명은 단수로! app 이름은 보통 복�
 '''
 
 
-class Comment(models.Model):
-    # 1:N 관계 표시
-    # article.comment_set.all()  ==  article.comments.all()  (related 이름 설정하면 이렇게 받을 수 있음)
-    article = models.ForeignKey(Article, related_name='comments', on_delete=models.CASCADE)
-    # user.comments  /  comments.user로 접근할 수 있다.
-    content = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ('-pk', )
